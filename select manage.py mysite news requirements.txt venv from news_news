@@ -1,0 +1,16 @@
+                  List of relations
+ Schema |            Name            | Type  | Owner 
+--------+----------------------------+-------+-------
+ public | auth_group                 | table | hello
+ public | auth_group_permissions     | table | hello
+ public | auth_permission            | table | hello
+ public | auth_user                  | table | hello
+ public | auth_user_groups           | table | hello
+ public | auth_user_user_permissions | table | hello
+ public | django_admin_log           | table | hello
+ public | django_content_type        | table | hello
+ public | django_migrations          | table | hello
+ public | django_session             | table | hello
+ public | news_news                  | table | hello
+(11 rows)
+
