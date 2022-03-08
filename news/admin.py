@@ -1,10 +1,20 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django import forms
 from .models import News, Category
 
 
+class NewsAdminForm(forms.ModelForm): #создаем специальный класс, который связывает с моделью News для Ckeditor
+    content = forms.CharField(widget=CKEditorUploadingWidget())
+    class Meta:
+        model = News
+        fields = '__all__'
+
+
+
 class NewsAdmin(admin.ModelAdmin):
+    form = NewsAdminForm #используем класс NewsAdmin для подключения
     list_display = ('id', 'title', 'category', 'created_at', 'updated_at', 'is_published',
                     'views', 'get_image' ) #поле, которое показывает что мы увидем в админке
     list_display_links = ('id', 'title') # ссылки в админке

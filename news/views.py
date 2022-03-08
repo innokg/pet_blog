@@ -1,3 +1,4 @@
+from django.contrib.auth import login, logout
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
@@ -5,16 +6,63 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 
 from .models import News, Category
-from .forms import NewsForm
+from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm
 from .utils import MyMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.core.mail import send_mail
 
 
-def test(request):
-    objects = ['john', 'michael', 'albarsty', 'nina', 'pekiness', 'shantrapa', 'alias', 'chokolad', 'martishka']
-    paginator = Paginator(objects, 2)
-    page_num = request.GET.get('page', 1)
-    page_objects = paginator.get_page(page_num)
-    return render(request, 'news/test.html', {'page_obj': page_objects})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Вы успешно зарегистрировались!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'news/register.html', {'form': form})
+
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserLoginForm()
+
+    return render(request, 'news/login.html', {"form": form})
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
+
+def test(request):  #отвечает за отправку писем
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'],
+                     'ulan.developer88@gmail.com', ['bymeryli@thecarinformation.com'], fail_silently=True)
+            if mail:
+                messages.success(request, 'Письмо отправлено!')
+                return redirect('test')
+            else:
+                messages.error(request, 'Ошибка отправки письма!')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = ContactForm()
+    return render(request, 'news/test.html', {'form': form})
 
 
 class HomeNews(MyMixin,ListView): # перезаписываем функции в Классы
@@ -22,7 +70,7 @@ class HomeNews(MyMixin,ListView): # перезаписываем функции 
     template_name = 'news/home_news_list.html' #используем в качестве шаблоная заданный шаблон
     context_object_name = 'news' #выбираем контекстное имя которое мы итерируем в рендеринге страницы
     queryset = News.objects.select_related('category') #уменьшили количество SQL - запросов до 4-х
-    mixin_prop = 'привет Улан!'
+    mixin_prop = ''
     paginate_by = 2   #встроенная пагинация
     # extra_context = {'title': 'Главная'}
 

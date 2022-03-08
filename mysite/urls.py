@@ -24,8 +24,9 @@ import debug_toolbar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('news.urls')), # ставим пустые кавычки чтобы на домащней страничке появилась главная страница
-]
+    ]
 
 if settings.DEBUG:
     urlpatterns = [
