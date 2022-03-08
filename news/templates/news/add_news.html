@@ -12,12 +12,10 @@
 
 <h1>Добавить свой пост</h1>
 <form action="{% url 'add_news' %}" method="post" >
+
     {% csrf_token %}
 
-
     {{ form.as_p }}
-
-
 
     {{ form.non_field.errors }}
     {% comment %}
@@ -56,6 +54,9 @@
             {{ form.category.errors }}
         </div>
     </div>
+
+
+
     {% endcomment %}
 
     <button type="submit" class="btn btn-success btn-block">Добавить новость</button>

@@ -47,7 +47,7 @@ def user_logout(request):
     return redirect('login')
 
 
-def test(request):  #отвечает за отправку писем
+def contacts(request):  #отвечает за отправку писем
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -55,11 +55,11 @@ def test(request):  #отвечает за отправку писем
                      'ulan.developer88@gmail.com', ['bymeryli@thecarinformation.com'], fail_silently=True)
             if mail:
                 messages.success(request, 'Письмо отправлено!')
-                return redirect('test')
+                return redirect('contacts')
             else:
                 messages.error(request, 'Ошибка отправки письма!')
         else:
-            messages.error(request, 'Ошибка регистрации')
+            messages.error(request, 'Ошибка валидации')
     else:
         form = ContactForm()
     return render(request, 'news/test.html', {'form': form})

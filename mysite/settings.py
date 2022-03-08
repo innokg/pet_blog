@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'ckeditor',
     'ckeditor_uploader',
+    'captcha',
 
     #my apps
     'news.apps.NewsConfig',
@@ -214,5 +215,12 @@ CKEDITOR_CONFIGS = {
             'dialogui',
             'elementspath'
         ]),
+    }
+}
+
+CACHES = {   #подключение кэширования
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache', #кеширование в файловую систему
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
 }
